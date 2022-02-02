@@ -3,8 +3,22 @@ class Tile
         @flagged? = false
         @bombed? = bombed?
         @revealed? = false
-        @neighbours_number = 0
+        @nearest_bomb = 0
         @position = position
         @grid = grid
     end
+
+    def flag
+        @flagged? = @flagged? ? false : true 
+    end
+
+    def reveal
+        @revealed? = @revealed? ? false : true 
+    end
+
+    def neighbours
+        neighbours_tiles = []
+        #finire metodo, deve salvare tutte le tile vicine nell'array
+    end
+
 end
