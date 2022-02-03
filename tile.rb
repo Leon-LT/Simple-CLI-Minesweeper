@@ -1,6 +1,6 @@
 require "byebug"
 class Tile
-    attr_reader :grid
+    attr_reader :grid, :bombed
     def initialize(position, grid)
         @flagged = false
         @bombed = false

@@ -33,7 +33,7 @@ class Grid
         bombs_in_the_grid = 0
         until bombs_in_the_grid == bombs_quantity
             rand_x, rand_y = rand(0...@grid_size), rand(0...@grid_size)
-            if !@grid[rand_x][rand_y].is_a? Tile
+            if !@grid[rand_x][rand_y].bombed
                 @grid[rand_x][rand_y].is_bomb
                 bombs_in_the_grid += 1
             end
