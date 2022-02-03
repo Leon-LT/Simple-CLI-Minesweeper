@@ -5,6 +5,8 @@ class Grid
     def initialize(grid_size = 9)
         @grid = Array.new(grid_size) { Array.new(grid_size)}
         @grid_size = grid_size
+        fill_grid
+        place_bombs
     end
 
     def [](pos)
@@ -21,7 +23,7 @@ class Grid
         @grid = @grid.each_with_index do |row,x|
             row.each_with_index do |tile,y|
                 pos = [x,y]
-                tile = nil   
+                @grid[x][y] = Tile.new([x,y], self)   
             end
         end
     end
@@ -31,8 +33,8 @@ class Grid
         bombs_in_the_grid = 0
         until bombs_in_the_grid == bombs_quantity
             rand_x, rand_y = rand(0...@grid_size), rand(0...@grid_size)
-            if @grid[rand_x][rand_y] != "B"
-                @grid[rand_x][rand_y] = "B" 
+            if !@grid[rand_x][rand_y].is_a? Tile
+                @grid[rand_x][rand_y].is_bomb
                 bombs_in_the_grid += 1
             end
         end

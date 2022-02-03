@@ -1,11 +1,17 @@
+require "byebug"
 class Tile
-    def initialize(position, grid, bombed = false)
+    attr_reader :grid
+    def initialize(position, grid)
         @flagged = false
-        @bombed = bombed
+        @bombed = false
         @revealed = false
         @neighbours_number = 0
         @position = position
         @grid = grid
+    end
+
+    def inspect
+        { "position" => @position, "bombed" => @bombed}.inspect
     end
 
     def toggle_flag
@@ -16,17 +22,21 @@ class Tile
         @revealed = @revealed ? false : true 
     end
 
+    def is_bomb
+        @bombed = @bombed ? false : true 
+    end
+
     def neighbours
         neighbours_coords = [[-1,0], [1,0], [0,-1], [0,1], [-1,-1], [-1,1], [1,-1], [1,1]]
-        neighbours = []
+        neighbours_arr = []
 
         neighbours_coords.each do |coords|
             x,y = coords
             curr_x,curr_y = @position
-            puts x + curr_x
-            puts y + curr_y
-            puts "--------"
-            neighbours << @grid[x + curr_x][y + curr_y]
+            neighbours_arr << @grid[[x + curr_x,y + curr_y]]
         end
+        neighbours_arr
     end
+
+    
 end
