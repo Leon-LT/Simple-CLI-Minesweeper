@@ -1,17 +1,17 @@
 require "byebug"
 class Tile
-    attr_reader :grid, :bombed
+    attr_reader :bombed, :flagged
+    attr_accessor :near_bombs, :revealed
     def initialize(position, grid)
         @flagged = false
         @bombed = false
         @revealed = false
-        @neighbours_number = 0
         @position = position
         @grid = grid
     end
 
     def inspect
-        { "position" => @position, "bombed" => @bombed}.inspect
+        { "position" => @position, "revealed" => @revealed, "bombed" => @bombed}.inspect
     end
 
     def toggle_flag
@@ -19,32 +19,40 @@ class Tile
     end
 
     def reveal
-        @revealed = @revealed ? false : true 
+        return if @revealed || @bombed
+        self.revealed = true
+        if neighbors.none? { |neighbor| neighbor.bombed}
+            neighbors.each do |neighbor| 
+                neighbor.reveal
+            end
+        end
     end
 
     def is_bomb
         @bombed = @bombed ? false : true 
     end
 
-    def neighbours
-        neighbours_coords = [[-1,0], [1,0], [0,-1], [0,1], [-1,-1], [-1,1], [1,-1], [1,1]]
-        neighbours_arr = []
+    def neighbors
+        neighbors_coords = [[-1,0], [1,0], [0,-1], [0,1], [-1,-1], [-1,1], [1,-1], [1,1]]
+        neighbors_arr = []
 
-        neighbours_coords.each do |coords|
-            x,y = coords
-            curr_x,curr_y = @position
-            neighbours_arr << @grid[[x + curr_x,y + curr_y]]
+        neighbors_coords.each do |coords|
+            x, y = (@position[0] + coords[0]), (@position[1] + coords[1])
+            neighbor_pos = [x, y]
+
+            if neighbor_pos.all? { |coord| coord.between?(0,( @grid.grid_size - 1)) }
+                neighbors_arr << @grid[neighbor_pos]
+            end
         end
-        neighbours_arr
+
+        neighbors_arr
     end
 
-    def neighbour_bombs_count
+    def neighbor_bombs_count
         bomb_count = 0
-        neighbours.each do |tile| 
+        neighbors.each do |tile| 
             bomb_count += 1 if tile.bombed
         end
-        bomb_count
+        return bomb_count
     end
-
-    
 end
