@@ -1,4 +1,5 @@
 require_relative "tile"
+require "colorize"
 
 class Grid
     attr_reader :grid_size, :grid

@@ -1,5 +1,6 @@
 require_relative "grid"
 require_relative "tile"
+require "yaml"
 
 class Minesweeper
     attr_reader :grid
@@ -7,6 +8,17 @@ class Minesweeper
         @grid = Grid.new(grid_size)
         @lost = false
     end
+
+    def self.load_game
+        game = YAML::unsafe_load_file(File.expand_path("./save_files/save.yml"))
+        game.play
+    end
+
+    def save_game
+        File.write(File.expand_path("./save_files/save.yml"), "")
+        yaml = YAML.dump(self)
+        File.write(File.expand_path("./save_files/save.yml"), "#{yaml}")
+    end 
 
     def win?
         @grid.all_revealed?
@@ -33,7 +45,7 @@ class Minesweeper
     def toggle_input(coords)
         p_input = ""
         until p_input == "F" || p_input == "R"
-            puts "Enter 'F' to flag a tile or 'R' to reveal a tile."
+            puts "Enter 'F' to flag a tile or 'R' to reveal a tile or enter S to save."
             print "> "
             p_input = gets.chomp.upcase 
             case p_input
@@ -42,6 +54,9 @@ class Minesweeper
             when "R" 
                 @lost = true if @grid[coords].bombed
                 @grid[coords].reveal
+            when "S"
+                save_game
+                puts "Game saved! You can now close the game."
             end
         end
     end
@@ -59,5 +74,21 @@ class Minesweeper
             puts "Nice try"
         end
     end
-
 end
+
+choice = nil
+until choice == "load" || choice == "new" 
+    puts "Do you want to play a new game or load a save\n Type load or new"
+    print "> "
+    choice = gets.chomp
+end
+
+if choice == "load"
+    Minesweeper.load_game
+else
+    puts "Enter grid size"
+    print "> "
+    game = Minesweeper.new(gets.chomp.to_i)
+    game.play
+end
+
