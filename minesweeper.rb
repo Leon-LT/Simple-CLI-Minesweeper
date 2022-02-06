@@ -56,7 +56,7 @@ class Minesweeper
                 @grid[coords].reveal
             when "S"
                 save_game
-                puts "Game saved! You can now close the game."
+                puts "Game saved! You can now close the game pressing Ctrl + C."
             end
         end
     end
